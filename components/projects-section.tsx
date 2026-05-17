@@ -1,50 +1,63 @@
 "use client"
 
+import { useState } from "react"
 import { motion } from "framer-motion"
 import { Butterfly } from "./butterfly"
-import { ExternalLink, Github } from "lucide-react"
+import Image from "next/image"
+import { ExternalLink, Github, X, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface Project {
   title: string
   description: string
   tags: string[]
   image?: string
+  images?: string[]
   liveUrl?: string
   githubUrl?: string
 }
 
 const projects: Project[] = [
   {
-    title: "Campus Event Manager",
-    description: "A web application for managing university events, featuring registration, notifications, and admin dashboard for event organizers.",
-    tags: ["React", "Node.js", "MongoDB", "Tailwind CSS"],
-    liveUrl: "#",
-    githubUrl: "#",
+    title: "Portfolio",
+    description: "A web application to showcase my projects as a computer science student.",
+    tags: ["Typescript", "Node.js", "Supabase", "Tailwind CSS"],
+    image: "/images/Projects/Portfolio/Screenshot 2026-05-17 152044.png",
+    images: [
+      "/images/Projects/Portfolio/Screenshot 2026-05-17 152044.png",
+    ],
   },
   {
-    title: "Student Task Tracker",
+    title: "Sebu-Cha POS",
     description: "A productivity app designed for students to manage assignments, deadlines, and study schedules with calendar integration.",
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
-    liveUrl: "#",
-    githubUrl: "#",
+    tags: ["TypeScript", "Node.js", "Supabase"],
+    image: "/images/Projects/Sebu-Cha POS/Screenshot 2026-05-17 151742.png",
+    images: [
+      "/images/Projects/Sebu-Cha POS/Screenshot 2026-05-17 151742.png",
+      "/images/Projects/Sebu-Cha POS/Screenshot 2026-05-17 151752.png",
+      "/images/Projects/Sebu-Cha POS/Screenshot 2026-05-17 151802.png",
+    ],
+    liveUrl: "https://pos-milktea.vercel.app/pos",
   },
-  {
-    title: "E-Commerce Prototype",
-    description: "A full-stack e-commerce solution with product catalog, cart functionality, and payment integration for local businesses.",
-    tags: ["React", "Express", "Stripe", "MySQL"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
-  {
-    title: "Weather Dashboard",
-    description: "A beautiful weather application with real-time data, forecasts, and location-based suggestions for activities.",
-    tags: ["JavaScript", "API Integration", "CSS3", "Responsive"],
-    liveUrl: "#",
-    githubUrl: "#",
-  },
+ 
 ]
 
 export function ProjectsSection() {
+  const [galleryOpen, setGalleryOpen] = useState(false)
+  const [galleryImages, setGalleryImages] = useState<string[]>([])
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  function openGallery(images: string[], start = 0) {
+    setGalleryImages(images)
+    setCurrentIndex(start)
+    setGalleryOpen(true)
+  }
+
+  function closeGallery() {
+    setGalleryOpen(false)
+    setGalleryImages([])
+    setCurrentIndex(0)
+  }
+
   return (
     <section id="projects" className="py-32 bg-secondary/30 relative">
       {/* Decorative background */}
@@ -93,16 +106,33 @@ export function ProjectsSection() {
               transition={{ delay: index * 0.1, duration: 0.6 }}
               className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
             >
-              {/* Project header with gradient */}
+              {/* Project header with image (falls back to gradient) */}
               <div className="h-32 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary relative overflow-hidden">
+                {project.image && (
+                  <div className="absolute inset-0">
+                    <button
+                      type="button"
+                      onClick={() => project.images ? openGallery(project.images, 0) : null}
+                      className="absolute inset-0 z-30 cursor-zoom-in"
+                      aria-label={project.images ? `Open ${project.title} gallery` : project.title}
+                    >
+                      <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </button>
+                  </div>
+                )}
                 <motion.div
-                  className="absolute bottom-2 right-2 text-primary/30"
+                  className="absolute bottom-2 right-2 text-primary/30 z-20 pointer-events-none"
                   animate={{ y: [0, -5, 0] }}
                   transition={{ duration: 3, repeat: Infinity, delay: index * 0.2 }}
                 >
                   <Butterfly size="md" />
                 </motion.div>
-                <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
                   <span className="text-6xl font-bold text-primary/5">0{index + 1}</span>
                 </div>
               </div>
@@ -153,6 +183,56 @@ export function ProjectsSection() {
           ))}
         </div>
       </div>
+
+      {galleryOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={closeGallery}
+            aria-hidden
+          />
+
+          <div className="relative z-10 w-full max-w-4xl max-h-[90vh] p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-sm text-muted-foreground">{currentIndex + 1} / {galleryImages.length}</div>
+              <button
+                className="p-2 rounded-full hover:bg-secondary"
+                onClick={closeGallery}
+                aria-label="Close gallery"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="relative bg-card rounded-lg overflow-hidden w-full h-[70vh] flex items-center justify-center">
+              <button
+                className="absolute left-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white z-20"
+                onClick={() => setCurrentIndex((i) => (i - 1 + galleryImages.length) % galleryImages.length)}
+                aria-label="Previous image"
+              >
+                <ChevronLeft className="w-6 h-6" />
+              </button>
+
+              <div className="relative w-full h-full flex items-center justify-center">
+                <Image
+                  src={galleryImages[currentIndex]}
+                  alt={`Gallery image ${currentIndex + 1}`}
+                  fill
+                  className="object-contain"
+                />
+              </div>
+
+              <button
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/30 text-white z-20"
+                onClick={() => setCurrentIndex((i) => (i + 1) % galleryImages.length)}
+                aria-label="Next image"
+              >
+                <ChevronRight className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   )
 }

@@ -7,10 +7,8 @@ export function AboutSection() {
   const skills = [
     "JavaScript",
     "TypeScript",
-    "React",
+    "Html/CSS",
     "Next.js",
-    "Python",
-    "Java",
     "SQL",
     "Git",
   ]
