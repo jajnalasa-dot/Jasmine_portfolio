@@ -38,6 +38,26 @@ const projects: Project[] = [
     ],
     liveUrl: "https://pos-milktea.vercel.app/pos",
   },
+  {
+    title: "Snake Game",
+    description: "A classic Snake game implemented with modern web technologies.",
+    tags: ["Html", "CSS", "JavaScript"],
+    image: "/images/Projects/SnakeGame/Snake_Game.png",
+    images: [
+      "/images/Projects/SnakeGame/Snake_Game.png",
+      "/images/Projects/SnakeGame/Snake_Game.mp4",
+    ],
+  },
+  {
+    title: "Payroll",
+    description: "A payroll lending managemeny system designed to streamline employee loan processing and management.",
+    tags: ["Html", "JavaScript", "Php", "MySQL", "CSS"],
+    image: "/images/Projects/Payroll/Payroll.png",
+    images: [
+      "/images/Projects/Payroll/Payroll.png",
+      "/images/Projects/Payroll/Payroll.mp4",
+    ],
+  },
  
 ]
 
@@ -214,12 +234,22 @@ export function ProjectsSection() {
               </button>
 
               <div className="relative w-full h-full flex items-center justify-center">
-                <Image
-                  src={galleryImages[currentIndex]}
-                  alt={`Gallery image ${currentIndex + 1}`}
-                  fill
-                  className="object-contain"
-                />
+                {galleryImages[currentIndex] && /\.(mp4|webm|ogg)$/i.test(galleryImages[currentIndex]) ? (
+                  <video
+                    src={galleryImages[currentIndex]}
+                    className="w-full h-full object-contain"
+                    controls
+                    autoPlay
+                    playsInline
+                  />
+                ) : (
+                  <Image
+                    src={galleryImages[currentIndex]}
+                    alt={`Gallery image ${currentIndex + 1}`}
+                    fill
+                    className="object-contain"
+                  />
+                )}
               </div>
 
               <button
